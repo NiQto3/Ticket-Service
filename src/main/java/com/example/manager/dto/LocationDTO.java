@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventLocationDTO {
+public class LocationDTO {
 
     private Integer id;
 
     @NotBlank(message = "Location name is required")
-    @Size(max = 45, message = "Name must be less than 45 characters")
+    @Size(max = 100, message = "Name must be less than 45 characters")
     private String name;
 
     @NotBlank(message = "Address is required")
-    @Size(max = 100, message = "Address must be less than 100 characters")
+    @Size(max = 255, message = "Address must be less than 100 characters")
     private String address;
 }

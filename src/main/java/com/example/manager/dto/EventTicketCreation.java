@@ -13,9 +13,10 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventTicketDataDTO {
+public class EventTicketCreation {
+    //TODO on creation of EventCreation need to write Trigger of creation of this
     @NotNull(message = "Event ID is required")
-    private Integer eventId;   //Event id
+    private Integer eventId;
 
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be non-negative")
@@ -23,8 +24,5 @@ public class EventTicketDataDTO {
 
     @NotNull(message = "Number of tickets is required")
     @Min(value = 1, message = "At least one ticket must be available")
-    private Integer num;
-
-    private Integer reservedNum;
-    private Integer soldNum;
+    private Integer totalQuantity;
 }

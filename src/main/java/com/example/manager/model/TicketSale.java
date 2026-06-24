@@ -9,33 +9,32 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ticket_sold_data")
-public class TicketSoldData {
+@Table(name = "ticket_sales")
+public class TicketSale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sold_id")
-    private Integer soldId;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @JoinColumn(name = "event_id", nullable = false, referencedColumnName = "event_id")
+    private EventTicket eventTicket;
 
     @CreationTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "sold_datetime", nullable = false)
-    private LocalDateTime soldDateTime;
+    @Column(name = "sale_datetime", nullable = false, columnDefinition = "TIMESTAMPTZ")
+    private OffsetDateTime saleDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sold_to", nullable = false)
-    private User soldTo;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private User customer;
 
-    @Column(name = "sold_price", nullable = false, columnDefinition = "MONEY")
-    private BigDecimal soldPrice;
+    @Column(name = "sale_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal salePrice;
 }

@@ -1,6 +1,6 @@
 package com.example.manager.dto;
 
-import com.example.manager.model.UserRole;
+import com.example.manager.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,19 +15,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-
-    @NotNull(message = "Must not be empty")
     private Integer id;
 
-    @NotBlank(message = "Username is required")
-    @Size(max = 45, message = "Username must be less than 45 characters")
+    @NotBlank
+    @Size(max = 45)
     private String username;
 
-    @NotNull(message = "Role is required")
-    private UserRole role;
+    @NotNull
+    private Role role;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
-    @Size(max = 45, message = "Email must be less than 45 characters")
+    @NotBlank
+    @Email
+    @Size(max = 255)
     private String email;
 }

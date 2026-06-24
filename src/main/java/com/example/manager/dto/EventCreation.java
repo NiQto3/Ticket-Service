@@ -18,8 +18,8 @@ public class EventCreation {
     @FutureOrPresent(message = "Event datetime must be present or future")
     private LocalDateTime datetime;
 
-    @NotNull(message = "Author ID is required")
-    private Integer authorId;
+    @NotNull(message = "Organizer ID is required")
+    private Integer organizerId;
 
     @NotNull(message = "Location ID is required")
     private Integer locationId;

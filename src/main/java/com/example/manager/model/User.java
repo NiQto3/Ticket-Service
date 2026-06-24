@@ -1,13 +1,9 @@
 package com.example.manager.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -21,14 +17,14 @@ public class User {
     @Column(unique = true, nullable = false, length = 45)
     private String username;
 
-    @Column(nullable = false, length = 45)
-    private String password;
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "role")
-    private UserRole role;
+    private Role role;
 
-    @Column(nullable = false, length = 45)
+    @Column(nullable = false, length = 255)
     private String email;
 
 }

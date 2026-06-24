@@ -15,6 +15,6 @@ public class EventFullResponseDTO {
     private Integer id;
     private LocalDateTime datetime;
     private UserDTO author;
-    private EventLocationDTO location;
-    private EventTicketDataDTO ticketData;
+    private LocationDTO location;
+    private EventTicketDTO ticketData;
 }

@@ -9,24 +9,25 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TicketSoldDataDTO {
+public class TicketSaleDTO {
     //TODO give access to this only for admins and event creators
-    private Integer soldId;
+    private Integer id;
 
     @NotNull(message = "Event ID is required")
-    private Integer eventId;
+    private Integer eventTicket;
 
-    private LocalDateTime soldDateTime;
+    private OffsetDateTime saleDateTime;
 
-    @NotNull(message = "Buyer ID is required")
-    private Integer soldToUserId;
+    @NotNull(message = "Customer ID is required")
+    private Integer customerId;
 
     @NotNull(message = "Sold price is required")
     @Min(value = 0, message = "Sold price must be non-negative")
-    private BigDecimal soldPrice;
+    private BigDecimal salePrice;
 }
