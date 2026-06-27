@@ -1,4 +1,4 @@
-package com.example.manager.dto;
+package com.example.manager.dto.creation;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventTicketCreation {
+public class EventTicketCreationDTO {
     //TODO on creation of EventCreation need to write Trigger of creation of this
     @NotNull(message = "Event ID is required")
     private Integer eventId;

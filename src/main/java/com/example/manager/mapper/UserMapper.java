@@ -1,11 +1,10 @@
 package com.example.manager.mapper;
 
-import com.example.manager.dto.UserCreation;
 import com.example.manager.dto.UserDTO;
+import com.example.manager.dto.creation.UserCreationDTO;
 import com.example.manager.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
@@ -19,5 +18,5 @@ public interface UserMapper {
     User toEntity(UserDTO userDto);
 
     @Mapping(target = "id", ignore = true)
-    User toEntity(UserCreation userCreation);
+    User toEntity(UserCreationDTO userCreation);
 }

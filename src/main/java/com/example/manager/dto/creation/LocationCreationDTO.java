@@ -1,4 +1,4 @@
-package com.example.manager.dto;
+package com.example.manager.dto.creation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LocationCreation {
+public class LocationCreationDTO {
 
     @NotBlank(message = "Location name is required")
     @Size(max = 100, message = "Name must be less than 45 characters")

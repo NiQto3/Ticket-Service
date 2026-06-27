@@ -1,4 +1,4 @@
-package com.example.manager.dto;
+package com.example.manager.dto.creation;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreation {
+public class UserCreationDTO {
     @NotBlank
     @Size(max = 45)
     private String username;
 
     @NotBlank
     @Size(max = 255)
-    private String passwordHash;
+    private String password;
 
     @NotBlank
     @Email

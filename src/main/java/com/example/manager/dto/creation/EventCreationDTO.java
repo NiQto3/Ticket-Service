@@ -1,4 +1,4 @@
-package com.example.manager.dto;
+package com.example.manager.dto.creation;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventCreation {
+public class EventCreationDTO {
     @NotNull(message = "Event date and time is required")
     @FutureOrPresent(message = "Event datetime must be present or future")
     private LocalDateTime datetime;

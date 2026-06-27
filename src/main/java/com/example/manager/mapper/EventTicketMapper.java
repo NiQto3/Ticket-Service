@@ -1,7 +1,7 @@
 package com.example.manager.mapper;
 
-import com.example.manager.dto.EventTicketCreation;
 import com.example.manager.dto.EventTicketDTO;
+import com.example.manager.dto.creation.EventTicketCreationDTO;
 import com.example.manager.model.EventTicket;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,5 +18,5 @@ public interface EventTicketMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "event", ignore = true)
-    EventTicketCreation toEntity(EventTicketCreation eventTicketCreation);
+    EventTicketCreationDTO toEntity(EventTicketCreationDTO eventTicketCreation);
 }
