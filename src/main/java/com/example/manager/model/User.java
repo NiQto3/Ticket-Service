@@ -25,7 +25,7 @@ public class User {
     @Column(nullable = false, columnDefinition = "role")
     private Role role;
 
-    @Column(nullable = false, length = 255)
+    @Column(unique = true, nullable = false, length = 255)
     private String email;
 
 }

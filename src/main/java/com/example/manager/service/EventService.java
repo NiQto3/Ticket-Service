@@ -1,0 +1,69 @@
+package com.example.manager.service;
+
+import com.example.manager.dto.creation.EventCreationDTO;
+import com.example.manager.model.Event;
+import com.example.manager.model.Location;
+import com.example.manager.repository.EventRepository;
+import com.example.manager.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+
+@Service
+@RequiredArgsConstructor
+public class EventService {
+
+    private final EventRepository eventRepository;
+    private final UserService userService;
+    private final LocationService locationService;
+
+    @Transactional
+    public Event createEvent(EventCreationDTO eventCreation) {
+
+        Event event = Event.builder()
+                .datetime(OffsetDateTime.from(eventCreation.getDatetime()))
+                .organizer(userService.findUserById(eventCreation.getOrganizerId()))
+                .location(locationService.findLocationById(eventCreation.getLocationId()))
+                .build();
+        eventRepository.save(event);
+
+        return event;
+    }
+
+    public Event findEventById(int id) {
+        var eventOptional = eventRepository.findById(id);
+        return eventOptional.orElseThrow(() -> new RuntimeException("Location not found"));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
+    public void delete(int id) {
+        eventRepository.deleteById(id);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
+    public Event update(Event event) {
+        return eventRepository.save(
+                merge(findEventById(
+                        event.getId()), event)
+        );
+    }
+
+    private Event merge (Event src, Event dest) {
+        if (src.getDatetime() != null) {
+            dest.setDatetime(src.getDatetime());
+        }
+        if (src.getLocation() != null) {
+            dest.setLocation(src.getLocation());
+        }
+        if (src.getOrganizer() != null) {
+            dest.setOrganizer(src.getOrganizer());
+        }
+        return dest;
+    }
+
+}
