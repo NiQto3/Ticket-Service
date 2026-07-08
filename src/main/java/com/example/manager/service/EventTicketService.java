@@ -31,6 +31,9 @@ public class EventTicketService {
 
     }
 
-
+    public EventTicket findEventTicketById (int id) {
+        var eventTicketOptional = eventTicketRepository.findById(id);
+        return  eventTicketOptional.orElseThrow(() -> new RuntimeException("Event ticket not found"));
+    }
 
 }

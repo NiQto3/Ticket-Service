@@ -48,7 +48,7 @@ public class UserService {
 
     public User findUserById(int id) {
         var userOptional = userRepository.findById(id);
-        return userOptional.orElseThrow(() -> new RuntimeException("user is not found"));
+        return userOptional.orElseThrow(() -> new RuntimeException("User is not found"));
     }
 
     @Transactional

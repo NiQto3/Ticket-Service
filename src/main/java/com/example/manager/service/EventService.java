@@ -35,7 +35,7 @@ public class EventService {
 
     public Event findEventById(int id) {
         var eventOptional = eventRepository.findById(id);
-        return eventOptional.orElseThrow(() -> new RuntimeException("Location not found"));
+        return eventOptional.orElseThrow(() -> new RuntimeException("Event not found"));
     }
 
     @Transactional
