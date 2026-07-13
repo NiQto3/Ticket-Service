@@ -1,6 +1,8 @@
 package com.example.manager.service;
 
+import com.example.manager.dto.UserDTO;
 import com.example.manager.dto.creation.UserCreationDTO;
+import com.example.manager.mapper.UserMapper;
 import com.example.manager.model.Role;
 import com.example.manager.model.User;
 import com.example.manager.repository.UserRepository;
@@ -19,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     private String hashPassword(String password) {
         String passwordHash = passwordEncoder.encode(password);
@@ -49,6 +52,10 @@ public class UserService {
     public User findUserById(int id) {
         var userOptional = userRepository.findById(id);
         return userOptional.orElseThrow(() -> new RuntimeException("User is not found"));
+    }
+
+    public UserDTO findById(int id){
+        return userMapper.toDto(findUserById(id));
     }
 
     @Transactional
