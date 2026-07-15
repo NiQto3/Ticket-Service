@@ -16,7 +16,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketSaleDTO {
-    //TODO give access to this only for admins and event creators
     private Integer id;
 
     @NotNull(message = "Event ID is required")

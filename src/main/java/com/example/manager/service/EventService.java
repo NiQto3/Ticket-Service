@@ -1,36 +1,38 @@
 package com.example.manager.service;
 
+import com.example.manager.dto.EventDTO;
 import com.example.manager.dto.creation.EventCreationDTO;
+import com.example.manager.mapper.EventMapper;
 import com.example.manager.model.Event;
 import com.example.manager.model.Location;
 import com.example.manager.repository.EventRepository;
 import com.example.manager.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventService {
 
     private final EventRepository eventRepository;
     private final UserService userService;
     private final LocationService locationService;
+    private final EventMapper eventMapper;
 
     @Transactional
-    public Event createEvent(EventCreationDTO eventCreation) {
+    public EventDTO createEvent(EventCreationDTO eventCreation) {
 
         Event event = Event.builder()
                 .datetime(OffsetDateTime.from(eventCreation.getDatetime()))
                 .organizer(userService.findUserById(eventCreation.getOrganizerId()))
                 .location(locationService.findLocationById(eventCreation.getLocationId()))
                 .build();
-        eventRepository.save(event);
-
-        return event;
+        return eventMapper.toDto(eventRepository.save(event));
     }
 
     public Event findEventById(int id) {
@@ -46,11 +48,10 @@ public class EventService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
-    public Event update(Event event) {
-        return eventRepository.save(
-                merge(findEventById(
-                        event.getId()), event)
-        );
+    public EventDTO update(EventDTO eventDTO) {
+        final Event event = findEventById(eventDTO.getId());
+        return eventMapper.toDto(eventRepository.save(
+                merge(findEventById(event.getId()), event)));
     }
 
     private Event merge (Event src, Event dest) {

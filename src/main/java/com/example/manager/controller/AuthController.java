@@ -1,16 +1,17 @@
 package com.example.manager.controller;
 
-import com.example.manager.dto.AuthRequest;
-import com.example.manager.dto.AuthResponse;
-import com.example.manager.dto.AuthoritiesDTO;
+import com.example.manager.dto.*;
 import com.example.manager.dto.creation.UserCreationDTO;
 import com.example.manager.model.User;
 import com.example.manager.security.UserDetailsInfo;
 import com.example.manager.security.service.AuthService;
 import com.example.manager.security.util.JWTUtil;
 import com.example.manager.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,21 +22,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "${cors.url}", maxAge = 3600, allowCredentials = "true")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AuthController {
 
     private final JWTUtil jwtUtil;
     private final AuthService authService;
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-
-    @Autowired
-    public AuthController(JWTUtil jwtUtil ,AuthService authService,
-                          AuthenticationManager authenticationManager, UserService userService) {
-        this.jwtUtil = jwtUtil;
-        this.authService = authService;
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-    }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
@@ -60,9 +53,9 @@ public class AuthController {
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.OK)
-    public AuthResponse registration (@RequestBody UserCreationDTO userCreationDTO,
+    public AuthResponse registration (@Valid @RequestBody UserCreationDTO userCreationDTO,
                                       BindingResult bindingResult) {
-        checkForErrors(bindingResult);
+        ErrorHandler.checkForErrors(bindingResult, "Registration failed");
 
         User user = userService.createUser(userCreationDTO);
         String  jwtToken = jwtUtil.generateToken(user);
@@ -77,14 +70,12 @@ public class AuthController {
         );
     }
 
-    private void checkForErrors(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder();
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                errorMessage.append(error.getDefaultMessage()).append("; ");
-            }
-            throw new RuntimeException(errorMessage.toString());
-        }
+    @PutMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+    public void changePassword (@PathVariable Integer userId, @RequestBody PasswordChangeDTO passwordChangeDTO) {
+        authService.ChangePassword(userService.findUserById(userId),
+                                   passwordChangeDTO);
     }
 
 }
