@@ -72,7 +72,7 @@ public class AuthController {
 
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+    @PreAuthorize("#userId == authentication.principal.id")
     public void changePassword (@PathVariable Integer userId, @RequestBody PasswordChangeDTO passwordChangeDTO) {
         authService.ChangePassword(userService.findUserById(userId),
                                    passwordChangeDTO);

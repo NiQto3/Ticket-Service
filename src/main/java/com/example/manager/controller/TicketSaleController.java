@@ -28,31 +28,4 @@ public class TicketSaleController {
         return ticketSaleService.createTicketSale(ticketSaleDTO);
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
-    public TicketSaleDTO performPurchase (@PathVariable int id, @Valid @RequestBody EventTicketDTO eventTicketDTO,
-                                          BindingResult bindingResult) {
-        ErrorHandler.checkForErrors(bindingResult, "Ticket purchase failed");
-
-        //reserve ticket
-        ticketSaleService.UpdateReserved(eventTicketDTO, 1);
-
-        //here will be purchase attempt
-        //if succseeded
-        ticketSaleService.AddSold(eventTicketDTO);
-        TicketSaleDTO ticketSaleDTO = TicketSaleDTO.builder().
-                eventTicket(eventTicketDTO.getId()).
-                saleDateTime(OffsetDateTime.from(Instant.now())).
-                customerId(id).
-                salePrice(eventTicketDTO.getPrice()).
-                build();
-        ticketSaleService.createTicketSale(ticketSaleDTO);
-        //also need to write message send
-
-        //if not
-        ticketSaleService.UpdateReserved(eventTicketDTO, -1);
-
-        return ticketSaleDTO;
-    }
-
 }

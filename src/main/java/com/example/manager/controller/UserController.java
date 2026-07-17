@@ -1,7 +1,8 @@
 package com.example.manager.controller;
 
-import com.example.manager.dto.PasswordChangeDTO;
 import com.example.manager.dto.UserDTO;
+import com.example.manager.mapper.UserMapper;
+import com.example.manager.model.User;
 import com.example.manager.security.UserDetailsInfo;
 import com.example.manager.service.UserService;
 import jakarta.validation.Valid;
@@ -10,7 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -19,10 +24,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping("/current")
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO getCurrentUser() {
+    public UserDTO getCurrentUser () {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!principal.getClass().equals(UserDetailsInfo.class))
             throw new RuntimeException("Not authorized");
@@ -31,9 +37,32 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public UserDTO getUserById(@Valid @PathVariable Integer id) {
+    public UserDTO getUserById (@Valid @PathVariable Integer id) {
         return userService.findById(id);
+    }
+
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO updateUserRole (@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+        ErrorHandler.checkForErrors(bindingResult, "Update user failed");
+        return userMapper.toDto(userService.update(userMapper.toEntity(userDTO)));
+    }
+
+    @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUser (@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+        ErrorHandler.checkForErrors(bindingResult, "Update user failed");
+        userService.delete(userDTO.getId());
+    }
+
+    @GetMapping("/user_list")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDTO> getUserList () {
+        List<UserDTO> result = new ArrayList<>();
+        for (var user : userService.getUsers()){
+            result.add(userMapper.toDto(user));
+        }
+        return result;
     }
 
 }

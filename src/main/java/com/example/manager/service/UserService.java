@@ -49,11 +49,13 @@ public class UserService {
         return user;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public User findUserById(int id) {
         var userOptional = userRepository.findById(id);
         return userOptional.orElseThrow(() -> new RuntimeException("User is not found"));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDTO findById(int id){
         return userMapper.toDto(findUserById(id));
     }

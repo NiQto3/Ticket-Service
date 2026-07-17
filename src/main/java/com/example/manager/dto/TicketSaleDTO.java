@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketSaleDTO {
-    private Integer id;
+    private String id;
 
     @NotNull(message = "Event ID is required")
     private Integer eventTicket;
