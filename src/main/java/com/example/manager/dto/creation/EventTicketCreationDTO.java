@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventTicketCreationDTO {
-    //TODO on creation of EventCreation need to write Trigger of creation of this
+
     @NotNull(message = "Event ID is required")
     private Integer eventId;
 
