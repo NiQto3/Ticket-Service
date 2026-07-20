@@ -13,10 +13,8 @@ public interface EventTicketMapper {
     EventTicketDTO toDto(EventTicket eventTicket);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "event", ignore = true)
     EventTicket toEntity(EventTicketDTO dto);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "event", ignore = true)
-    EventTicketCreationDTO toEntity(EventTicketCreationDTO eventTicketCreation);
+    EventTicket toEntity(EventTicketCreationDTO eventTicketCreation);
 }

@@ -1,11 +1,11 @@
-package com.example.manager.controller;
+package com.example.manager.service;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 public class ErrorHandler {
 
-    protected static void checkForErrors(BindingResult bindingResult, String context) {
+    public static void checkForErrors(BindingResult bindingResult, String context) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
             errorMessage.append(context).append(" = ");

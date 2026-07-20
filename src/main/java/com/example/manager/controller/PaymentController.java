@@ -6,10 +6,7 @@ import com.example.manager.dto.PaymentResponse;
 import com.example.manager.dto.TicketSaleDTO;
 import com.example.manager.mapper.EventTicketMapper;
 import com.example.manager.security.UserDetailsInfo;
-import com.example.manager.service.EmailService;
-import com.example.manager.service.EventTicketService;
-import com.example.manager.service.PaymentService;
-import com.example.manager.service.TicketSaleService;
+import com.example.manager.service.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +33,6 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final TicketSaleService ticketSaleService;
     private final EventTicketService eventTicketService;
-    private final EventTicketMapper eventTicketMapper;
     private final EmailService emailService;
 
     @PostMapping("/create")
@@ -45,8 +41,6 @@ public class PaymentController {
                                                          @AuthenticationPrincipal UserDetailsInfo userDetails) {
         ErrorHandler.checkForErrors(bindingResult, "Payment creation failed");
 
-        ticketSaleService.UpdateReserved(eventTicketDTO, 1);
-
         PaymentRequest request = PaymentRequest.builder()
                 .price(eventTicketDTO.getPrice())
                 .eventId(eventTicketDTO.getEventId())
@@ -54,6 +48,7 @@ public class PaymentController {
                 .build();
 
         PaymentResponse response = paymentService.createPayment(request, userDetails.getId(), eventTicketDTO.getId());
+        ticketSaleService.UpdateReserved(eventTicketDTO, 1);
         return ResponseEntity.ok(response);
     }
 
@@ -74,8 +69,8 @@ public class PaymentController {
                     mapper.convertValue(jsonNode, new TypeReference<>() {
                     });
 
-            EventTicketDTO eventTicketDTO =  eventTicketMapper.toDto(eventTicketService.
-                    findEventTicketById(Integer.parseInt(metadata.get("eventTicketId"))));
+            EventTicketDTO eventTicketDTO =  eventTicketService.
+                    findById(Integer.parseInt(metadata.get("eventTicketId")));
 
             ticketSaleService.AddSold(eventTicketDTO);
 

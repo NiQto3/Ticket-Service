@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class EventCreationDTO {
     @NotNull(message = "Event date and time is required")
     @FutureOrPresent(message = "Event datetime must be present or future")
-    private LocalDateTime datetime;
+    private OffsetDateTime datetime;
 
     @NotNull(message = "Organizer ID is required")
     private Integer organizerId;

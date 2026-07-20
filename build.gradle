@@ -27,8 +27,8 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    compileOnly 'org.projectlombok:lombok:latest.version'
-    annotationProcessor 'org.projectlombok:lombok:latest.version'
+    compileOnly 'org.projectlombok:lombok:1.18.44'
+    annotationProcessor 'org.projectlombok:lombok:1.18.44'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     runtimeOnly 'org.postgresql:postgresql'

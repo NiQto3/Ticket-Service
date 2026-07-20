@@ -49,9 +49,9 @@ public class LocationService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
     public LocationDTO update(LocationDTO locationDto) {
-        final Location location = locationMapper.toEntity(locationDto);
+        final Location location = findLocationById(locationDto.getId());
         return locationMapper.toDto(locationRepository.save(
-                merge(findLocationById(location.getId()), location)));
+                merge(location, findLocationById(location.getId()))));
     }
 
     private Location merge (Location src, Location dest) {

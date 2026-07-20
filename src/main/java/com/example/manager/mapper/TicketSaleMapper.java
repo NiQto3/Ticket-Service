@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TicketSaleMapper {
 
-    @Mapping(target = "eventId", source = "eventTicket.event.id")
+    @Mapping(target = "eventTicket", source = "eventTicket.id")
     @Mapping(target = "customerId", source = "customer.id")
     TicketSaleDTO toDto(TicketSale sale);
 

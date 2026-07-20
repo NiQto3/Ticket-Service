@@ -6,6 +6,7 @@ import com.example.manager.model.User;
 import com.example.manager.security.UserDetailsInfo;
 import com.example.manager.security.service.AuthService;
 import com.example.manager.security.util.JWTUtil;
+import com.example.manager.service.ErrorHandler;
 import com.example.manager.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -73,8 +72,10 @@ public class AuthController {
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("#userId == authentication.principal.id")
-    public void changePassword (@PathVariable Integer userId, @RequestBody PasswordChangeDTO passwordChangeDTO) {
-        authService.ChangePassword(userService.findUserById(userId),
+    public void changePassword (@PathVariable Integer userId, @RequestBody PasswordChangeDTO passwordChangeDTO,
+                                BindingResult bindingResult) {
+        ErrorHandler.checkForErrors(bindingResult, "Change password failed");
+        authService.ChangePassword(userService.authFindUserById(userId),
                                    passwordChangeDTO);
     }
 

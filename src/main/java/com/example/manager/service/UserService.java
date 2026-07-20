@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,8 +25,7 @@ public class UserService {
     private final UserMapper userMapper;
 
     private String hashPassword(String password) {
-        String passwordHash = passwordEncoder.encode(password);
-        return passwordHash;
+        return passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -42,7 +42,7 @@ public class UserService {
         User user = User.builder()
                 .username(userCreation.getUsername())
                 .passwordHash(hashPassword(userCreation.getPassword()))
-                .role(Role.customer)
+                .role(Role.CUSTOMER)
                 .email(userCreation.getEmail())
                 .build();
         userRepository.save(user);
@@ -51,6 +51,11 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public User findUserById(int id) {
+        var userOptional = userRepository.findById(id);
+        return userOptional.orElseThrow(() -> new RuntimeException("User is not found"));
+    }
+
+    public User authFindUserById(int id) {
         var userOptional = userRepository.findById(id);
         return userOptional.orElseThrow(() -> new RuntimeException("User is not found"));
     }
@@ -68,16 +73,21 @@ public class UserService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public User update(User user) {
-        return userRepository.save(merge(
-                findUserById(user.getId()),
-                user
-        ));
+    public UserDTO update(UserDTO userDto) {
+        User user = findUserById(userDto.getId());
+        return userMapper.toDto(userRepository.save(merge(
+                user,
+                findUserById(user.getId())
+        )));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getUsers() {
-        return userRepository.findAllByOrderByIdAsc();
+    public List<UserDTO> getUsers() {
+        List<UserDTO> result = new ArrayList<>();
+        for (var user : userRepository.findAllByOrderByIdAsc()){
+            result.add(userMapper.toDto(user));
+        }
+        return result;
     }
 
     private User merge (User src, User dest) {

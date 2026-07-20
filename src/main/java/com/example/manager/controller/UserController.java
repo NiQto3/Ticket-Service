@@ -2,14 +2,13 @@ package com.example.manager.controller;
 
 import com.example.manager.dto.UserDTO;
 import com.example.manager.mapper.UserMapper;
-import com.example.manager.model.User;
 import com.example.manager.security.UserDetailsInfo;
+import com.example.manager.service.ErrorHandler;
 import com.example.manager.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
 
     @GetMapping("/current")
     @ResponseStatus(HttpStatus.OK)
@@ -45,7 +43,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDTO updateUserRole (@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Update user failed");
-        return userMapper.toDto(userService.update(userMapper.toEntity(userDTO)));
+        return userService.update(userDTO);
     }
 
     @DeleteMapping("/delete")
@@ -58,11 +56,7 @@ public class UserController {
     @GetMapping("/user_list")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUserList () {
-        List<UserDTO> result = new ArrayList<>();
-        for (var user : userService.getUsers()){
-            result.add(userMapper.toDto(user));
-        }
-        return result;
+        return userService.getUsers();
     }
 
 }

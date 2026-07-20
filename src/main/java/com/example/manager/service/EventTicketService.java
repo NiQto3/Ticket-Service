@@ -18,19 +18,18 @@ import java.time.OffsetDateTime;
 public class EventTicketService {
 
     private final EventTicketRepository eventTicketRepository;
-    private final EventService eventService;
     private final EventTicketMapper eventTicketMapper;
 
     @Transactional
     public EventTicketDTO createEventTicket(EventTicketCreationDTO eventTicketCreation) {
 
-        EventTicket eventTicket = EventTicket.builder()
-                .event(eventService.findEventById(eventTicketCreation.getEventId()))
-                .price(eventTicketCreation.getPrice())
-                .totalQuantity(eventTicketCreation.getTotalQuantity())
-                .build();
+        EventTicket eventTicket = eventTicketMapper.toEntity(eventTicketCreation);
         return eventTicketMapper.toDto(eventTicketRepository.save(eventTicket));
 
+    }
+
+    public EventTicketDTO findById (int id) {
+        return eventTicketMapper.toDto(findEventTicketById(id));
     }
 
     public EventTicket findEventTicketById (int id) {
@@ -40,10 +39,10 @@ public class EventTicketService {
 
     @Transactional
     public EventTicketDTO updateReserved (EventTicketDTO eventTicketDTO,Integer number) {
-        if (eventTicketDTO.getTotalQuantity() > (eventTicketDTO.getTotalQuantity() +
+        if (eventTicketDTO.getTotalQuantity() > (eventTicketDTO.getReservedQuantity() +
                 number + eventTicketDTO.getSoldQuantity())) {
             eventTicketDTO.setReservedQuantity(eventTicketDTO.getReservedQuantity() + number);
-            this.update(eventTicketMapper.toEntity(eventTicketDTO));
+            this.update(eventTicketDTO);
             return eventTicketDTO;
         }
         return eventTicketDTO;
@@ -51,20 +50,22 @@ public class EventTicketService {
 
     @Transactional
     public EventTicketDTO updateSold (EventTicketDTO eventTicketDTO, Integer number) {
-        if (eventTicketDTO.getTotalQuantity() > (eventTicketDTO.getTotalQuantity() +
+        if (eventTicketDTO.getTotalQuantity() > (eventTicketDTO.getReservedQuantity() +
                 number + eventTicketDTO.getSoldQuantity())) {
             eventTicketDTO.setSoldQuantity(eventTicketDTO.getSoldQuantity() + number);
-            this.update(eventTicketMapper.toEntity(eventTicketDTO));
+            this.update(eventTicketDTO);
             return eventTicketDTO;
         }
         return eventTicketDTO;
     }
 
     @Transactional
-    public EventTicket update (EventTicket eventTicket) {
-        return eventTicketRepository.save(merge(
+    public EventTicketDTO update (EventTicketDTO eventTicketDto) {
+        EventTicket eventTicket = findEventTicketById(eventTicketDto.getId());
+        return eventTicketMapper.toDto(eventTicketRepository.save(merge(
+                eventTicket,
                 findEventTicketById(eventTicket.getId())
-                ,eventTicket));
+        )));
     }
 
     private EventTicket merge (EventTicket src, EventTicket dest) {

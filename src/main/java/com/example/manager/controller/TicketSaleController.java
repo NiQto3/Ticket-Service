@@ -1,18 +1,13 @@
 package com.example.manager.controller;
 
-import com.example.manager.dto.EventTicketDTO;
 import com.example.manager.dto.TicketSaleDTO;
-import com.example.manager.dto.UserDTO;
+import com.example.manager.service.ErrorHandler;
 import com.example.manager.service.TicketSaleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Instant;
-import java.time.OffsetDateTime;
 
 @RestController
 @RequestMapping("/ticket_sale")
@@ -22,7 +17,7 @@ public class TicketSaleController {
 
     private final TicketSaleService ticketSaleService;
 
-    @PutMapping("/")
+    @PutMapping("/create")
     public TicketSaleDTO createTicketSale (@Valid @RequestBody TicketSaleDTO ticketSaleDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Ticket sale creation failed");
         return ticketSaleService.createTicketSale(ticketSaleDTO);

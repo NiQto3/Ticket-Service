@@ -28,7 +28,7 @@ public class EventService {
     public EventDTO createEvent(EventCreationDTO eventCreation) {
 
         Event event = Event.builder()
-                .datetime(OffsetDateTime.from(eventCreation.getDatetime()))
+                .datetime(eventCreation.getDatetime())
                 .organizer(userService.findUserById(eventCreation.getOrganizerId()))
                 .location(locationService.findLocationById(eventCreation.getLocationId()))
                 .build();
@@ -51,7 +51,7 @@ public class EventService {
     public EventDTO update(EventDTO eventDTO) {
         final Event event = findEventById(eventDTO.getId());
         return eventMapper.toDto(eventRepository.save(
-                merge(findEventById(event.getId()), event)));
+                merge(event, findEventById(event.getId()))));
     }
 
     private Event merge (Event src, Event dest) {
