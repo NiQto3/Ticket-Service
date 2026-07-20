@@ -75,7 +75,7 @@ public class AuthController {
     public void changePassword (@PathVariable Integer userId, @RequestBody PasswordChangeDTO passwordChangeDTO,
                                 BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Change password failed");
-        authService.ChangePassword(userService.authFindUserById(userId),
+        authService.changePassword(userService.authFindUserById(userId),
                                    passwordChangeDTO);
     }
 

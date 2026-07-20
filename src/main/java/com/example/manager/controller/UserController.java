@@ -39,18 +39,17 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
     public UserDTO updateUserRole (@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Update user failed");
         return userService.update(userDTO);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUser (@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
-        ErrorHandler.checkForErrors(bindingResult, "Update user failed");
-        userService.delete(userDTO.getId());
+    public void deleteUser (@Valid @PathVariable Integer id) {
+        userService.delete(id);
     }
 
     @GetMapping("/user_list")

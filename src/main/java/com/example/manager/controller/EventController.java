@@ -30,10 +30,9 @@ public class EventController {
         return eventService.update(eventDTO);
     }
 
-    @DeleteMapping("/delete")
-    public void deleteEvent (@Valid @RequestBody EventDTO eventDTO, BindingResult bindingResult) {
-        ErrorHandler.checkForErrors(bindingResult, "Event delete failed");
-        eventService.delete(eventDTO.getId());
+    @DeleteMapping("/delete/{id}")
+    public void deleteEvent (@Valid @PathVariable Integer id) {
+        eventService.delete(id);
     }
 
 }

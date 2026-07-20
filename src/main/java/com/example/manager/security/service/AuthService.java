@@ -40,7 +40,7 @@ public class AuthService implements UserDetailsService {
     }
 
     @Transactional
-    public void ChangePassword(User user, PasswordChangeDTO passwordChangeDTO) throws UsernameNotFoundException {
+    public void changePassword(User user, PasswordChangeDTO passwordChangeDTO) throws UsernameNotFoundException {
         if (this.passwordEncoder.matches(passwordEncoder.encode(
                 passwordChangeDTO.getOldPassword()),
                 user.getPasswordHash())
@@ -48,6 +48,8 @@ public class AuthService implements UserDetailsService {
             user.setPasswordHash(passwordEncoder.encode(
                                  passwordChangeDTO.getNewPassword()));
             userRepository.save(user);
+        } else {
+            throw new RuntimeException("Passwords don't match");
         }
     }
 

@@ -34,12 +34,12 @@ public class TicketSaleService {
     }
 
     @Transactional
-    public EventTicketDTO UpdateReserved (EventTicketDTO eventTicketDTO, Integer number) {
+    public EventTicketDTO updateReserved (EventTicketDTO eventTicketDTO, Integer number) {
         return eventTicketService.updateReserved(eventTicketDTO, number);
     }
 
     @Transactional
-    public EventTicketDTO AddSold (EventTicketDTO eventTicketDTO) {
+    public EventTicketDTO addSold (EventTicketDTO eventTicketDTO) {
         eventTicketDTO = eventTicketService.updateReserved(eventTicketDTO, -1);
         return eventTicketService.updateSold(eventTicketDTO, 1);
     }

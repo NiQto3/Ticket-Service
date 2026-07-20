@@ -18,7 +18,7 @@ public class EventTicketController {
 
     private final EventTicketService eventTicketService;
 
-    @PutMapping("/create")
+    @PostMapping("/create")
     public EventTicketDTO createEventTicket (@Valid @RequestBody EventTicketCreationDTO eventTicketCreationDTO,
                                              BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Event ticket creation failed");

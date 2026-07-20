@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -37,9 +38,13 @@ public class PaymentController {
 
     @PostMapping("/create")
     public ResponseEntity<PaymentResponse> createPayment(@Valid @RequestBody EventTicketDTO eventTicketDTO,
-                                                         BindingResult bindingResult, String description,
+                                                         BindingResult bindingResult,@RequestBody(required = false) String description,
                                                          @AuthenticationPrincipal UserDetailsInfo userDetails) {
         ErrorHandler.checkForErrors(bindingResult, "Payment creation failed");
+
+        if (description.isEmpty()) {
+            description = "Default description";
+        }
 
         PaymentRequest request = PaymentRequest.builder()
                 .price(eventTicketDTO.getPrice())
@@ -48,11 +53,10 @@ public class PaymentController {
                 .build();
 
         PaymentResponse response = paymentService.createPayment(request, userDetails.getId(), eventTicketDTO.getId());
-        ticketSaleService.UpdateReserved(eventTicketDTO, 1);
+        ticketSaleService.updateReserved(eventTicketDTO, 1);
         return ResponseEntity.ok(response);
     }
 
-    @Async
     @PostMapping("/callback")
     public ResponseEntity<Void> handlePaymentCallback(@RequestBody String requestBody) {
         try {
@@ -72,7 +76,7 @@ public class PaymentController {
             EventTicketDTO eventTicketDTO =  eventTicketService.
                     findById(Integer.parseInt(metadata.get("eventTicketId")));
 
-            ticketSaleService.AddSold(eventTicketDTO);
+            ticketSaleService.addSold(eventTicketDTO);
 
             TicketSaleDTO ticketSaleDTO = TicketSaleDTO.builder().
                     id(metadata.get("id")).

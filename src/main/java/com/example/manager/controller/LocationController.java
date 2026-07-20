@@ -18,16 +18,15 @@ public class LocationController {
 
     private final LocationService locationService;
 
-    @PutMapping("/create")
+    @PostMapping("/create")
     public LocationDTO createLocation(@Valid @RequestBody LocationCreationDTO locationCreationDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Location creation failed");
         return locationService.createLocation(locationCreationDTO);
     }
 
-    @DeleteMapping("/delete")
-    public void deleteLocation(@Valid @RequestBody LocationDTO locationDTO, BindingResult bindingResult) {
-        ErrorHandler.checkForErrors(bindingResult, "Location delete failed");
-        locationService.delete(locationDTO.getId());
+    @DeleteMapping("/delete/{id}")
+    public void deleteLocation(@Valid @PathVariable Integer id) {
+        locationService.delete(id);
     }
 
     @PutMapping("/update")

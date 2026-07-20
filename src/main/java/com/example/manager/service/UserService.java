@@ -42,7 +42,7 @@ public class UserService {
         User user = User.builder()
                 .username(userCreation.getUsername())
                 .passwordHash(hashPassword(userCreation.getPassword()))
-                .role(Role.CUSTOMER)
+                .role(Role.ROLE_CUSTOMER)
                 .email(userCreation.getEmail())
                 .build();
         userRepository.save(user);
