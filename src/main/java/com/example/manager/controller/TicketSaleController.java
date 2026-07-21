@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/ticket_sale")
+@RequestMapping("/api/ticket_sale")
 @CrossOrigin(origins = "${cors.url}", maxAge = 3600, allowCredentials = "true")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TicketSaleController {

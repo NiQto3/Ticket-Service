@@ -11,12 +11,15 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserMapper {
 
-    @Mapping(target = "passwordHash", source = "passwordHash", ignore = true)
+    //@Mapping(target = "passwordHash", source = "passwordHash", ignore = true)
     UserDTO toDto(User user);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "passwordHash",  ignore = true)
     User toEntity(UserDTO userDto);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "role", constant = "ROLE_CUSTOMER")
+    @Mapping(target = "passwordHash", source = "password")
     User toEntity(UserCreationDTO userCreation);
 }

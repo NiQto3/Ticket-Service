@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @CrossOrigin(origins = "${cors.url}", maxAge = 3600, allowCredentials = "true")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserController {

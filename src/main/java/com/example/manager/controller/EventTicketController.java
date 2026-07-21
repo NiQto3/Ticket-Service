@@ -11,7 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/event_ticket")
+@RequestMapping("/api/event_ticket")
 @CrossOrigin(origins = "${cors.url}", maxAge = 3600, allowCredentials = "true")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventTicketController {
