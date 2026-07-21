@@ -12,9 +12,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,14 +71,18 @@ public class AuthController {
         );
     }
 
-    @PutMapping("/{userId}")
+    @PostMapping("/{userId}/password-change")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("#userId == authentication.principal.id")
-    public void changePassword (@PathVariable Integer userId, @RequestBody PasswordChangeDTO passwordChangeDTO,
-                                BindingResult bindingResult) {
+    public void changePassword(@PathVariable Integer userId,
+                               @Valid @RequestBody PasswordChangeDTO dto,
+                               BindingResult bindingResult,
+                               @AuthenticationPrincipal UserDetailsInfo currentUser) {
         ErrorHandler.checkForErrors(bindingResult, "Change password failed");
-        authService.changePassword(userService.authFindUserById(userId),
-                                   passwordChangeDTO);
+
+        if (!(currentUser.getId() == userId)) {
+            throw new AccessDeniedException("You cannot change password for another user");
+        }
+        authService.changePassword(userService.authFindUserById(userId), dto);
     }
 
 }

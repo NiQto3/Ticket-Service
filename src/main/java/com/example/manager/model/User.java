@@ -22,7 +22,7 @@ public class User {
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "role")
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'ROLE_CUSTOMER'")
     private Role role;
 
     @Column(unique = true, nullable = false, length = 255)
