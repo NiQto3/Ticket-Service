@@ -63,13 +63,13 @@ public class EventService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
-    public EventDTO update (EventDTO eventDTO) {
-        final Event event = eventMapper.toEntity(eventDTO);
-        event.setLocation(locationService.findLocationById(eventDTO.getLocationId()));
-        event.setOrganizer(userService.authFindUserById(eventDTO.getOrganizerId()));
+    public EventDTO update (EventDTO eventDto) {
+        final Event event = eventMapper.toEntity(eventDto);
+        event.setLocation(locationService.findLocationById(eventDto.getLocationId()));
+        event.setOrganizer(userService.authFindUserById(eventDto.getOrganizerId()));
 
         return eventMapper.toDto(eventRepository.save(
-                merge(event, findEventById(event.getId()))));
+                merge(event, findEventById(eventDto.getId()))));
     }
 
     private Event merge (Event src, Event dest) {

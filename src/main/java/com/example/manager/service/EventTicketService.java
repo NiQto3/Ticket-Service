@@ -83,7 +83,7 @@ public class EventTicketService {
         EventTicket eventTicket = eventTicketMapper.toEntity(eventTicketDto);
         return eventTicketMapper.toDto(eventTicketRepository.save(merge(
                 eventTicket,
-                getEventTicketById(eventTicket.getId())
+                getEventTicketById(eventTicketDto.getId())
         )));
     }
 

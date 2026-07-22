@@ -40,8 +40,7 @@ public class EventTicketController {
     }
 
     @GetMapping("/{id}")
-    public EventTicketDTO getEventTicket (@Valid @PathVariable Integer id, BindingResult bindingResult) {
-        ErrorHandler.checkForErrors(bindingResult, "Event ticket get failed");
+    public EventTicketDTO getEventTicket (@Valid @PathVariable Integer id) {
         return eventTicketService.getById(id);
     }
 

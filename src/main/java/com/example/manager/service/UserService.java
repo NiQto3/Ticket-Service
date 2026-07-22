@@ -62,6 +62,10 @@ public class UserService {
         return userMapper.toDto(findUserById(id));
     }
 
+    public UserDTO getCurrentUser(int id){
+        return userMapper.toDto(findUserById(id));
+    }
+
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public void delete(int id) {
@@ -83,7 +87,7 @@ public class UserService {
         User user = userMapper.toEntity(userDto);
         return userMapper.toDto(userRepository.save(merge(
                 user,
-                findUserById(user.getId())
+                findUserById(userDto.getId())
         )));
     }
 

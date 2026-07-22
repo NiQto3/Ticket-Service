@@ -26,7 +26,7 @@ public class EventTicket {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id", nullable = false, unique = true)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
     @Column(nullable = false, precision = 10, scale = 2)

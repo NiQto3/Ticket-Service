@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TicketSaleService {
@@ -25,6 +27,9 @@ public class TicketSaleService {
     public TicketSaleDTO createTicketSale (TicketSaleDTO ticketSaleDTO) {
 
         TicketSale ticketSale = ticketSaleMapper.toEntity(ticketSaleDTO);
+        if (ticketSaleDTO.getSaleDateTime() == null) {
+            ticketSale.setSaleDateTime(OffsetDateTime.now());
+        }
         ticketSale.setCustomer(userService.findUserById(ticketSaleDTO.getCustomerId()));
         ticketSale.setEventTicket(eventTicketService.getEventTicketById(ticketSaleDTO.getEventTicket()));
 

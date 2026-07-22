@@ -67,7 +67,7 @@ public class LocationService {
         final Location location = locationMapper.toEntity(locationDto);
         return locationMapper.toDto(locationRepository
                 .save(merge(location,
-                            findLocationById(location.getId()))));
+                            findLocationById(locationDto.getId()))));
     }
 
     private Location merge (Location src, Location dest) {
