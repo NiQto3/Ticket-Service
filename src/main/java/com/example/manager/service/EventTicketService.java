@@ -3,15 +3,16 @@ package com.example.manager.service;
 import com.example.manager.dto.EventTicketDTO;
 import com.example.manager.dto.creation.EventTicketCreationDTO;
 import com.example.manager.mapper.EventTicketMapper;
-import com.example.manager.model.Event;
 import com.example.manager.model.EventTicket;
 import com.example.manager.repository.EventTicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -28,11 +29,19 @@ public class EventTicketService {
 
     }
 
-    public EventTicketDTO findById (int id) {
-        return eventTicketMapper.toDto(findEventTicketById(id));
+    public EventTicketDTO getById(int id) {
+        return eventTicketMapper.toDto(getEventTicketById(id));
     }
 
-    public EventTicket findEventTicketById (int id) {
+    public List<EventTicketDTO> getAll () {
+        List<EventTicketDTO> result = new ArrayList<>();
+        for (EventTicket eventTicket : eventTicketRepository.findAll()) {
+            result.add(eventTicketMapper.toDto(eventTicket));
+        }
+        return result;
+    }
+
+    public EventTicket getEventTicketById(int id) {
         var eventTicketOptional = eventTicketRepository.findById(id);
         return  eventTicketOptional.orElseThrow(() -> new RuntimeException("Event ticket not found"));
     }
@@ -42,7 +51,7 @@ public class EventTicketService {
         if (eventTicketDTO.getTotalQuantity() > (eventTicketDTO.getReservedQuantity() +
                 number + eventTicketDTO.getSoldQuantity())) {
             eventTicketDTO.setReservedQuantity(eventTicketDTO.getReservedQuantity() + number);
-            this.update(eventTicketDTO);
+            this.updateSecured(eventTicketDTO);
             return eventTicketDTO;
         }
         return eventTicketDTO;
@@ -53,18 +62,28 @@ public class EventTicketService {
         if (eventTicketDTO.getTotalQuantity() > (eventTicketDTO.getReservedQuantity() +
                 number + eventTicketDTO.getSoldQuantity())) {
             eventTicketDTO.setSoldQuantity(eventTicketDTO.getSoldQuantity() + number);
-            this.update(eventTicketDTO);
+            this.updateSecured(eventTicketDTO);
             return eventTicketDTO;
         }
         return eventTicketDTO;
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
+    public EventTicketDTO update (EventTicketDTO eventTicketDTO){
+        return updateSecured(eventTicketDTO);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
+    public void delete (int id) {
+        eventTicketRepository.deleteById(id);
+    }
+
     @Transactional
-    public EventTicketDTO update (EventTicketDTO eventTicketDto) {
-        EventTicket eventTicket = findEventTicketById(eventTicketDto.getId());
+    private EventTicketDTO updateSecured (EventTicketDTO eventTicketDto) {
+        EventTicket eventTicket = eventTicketMapper.toEntity(eventTicketDto);
         return eventTicketMapper.toDto(eventTicketRepository.save(merge(
                 eventTicket,
-                findEventTicketById(eventTicket.getId())
+                getEventTicketById(eventTicket.getId())
         )));
     }
 

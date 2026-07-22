@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class LocationService {
@@ -20,6 +23,7 @@ public class LocationService {
     private final LocationMapper locationMapper;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
     public LocationDTO createLocation(LocationCreationDTO locationCreation) {
 
         if (locationRepository.existsByAddress(locationCreation.getAddress()) &&
@@ -27,10 +31,7 @@ public class LocationService {
             throw new RuntimeException("Location already exists");
         }
 
-        Location location = Location.builder()
-                .name(locationCreation.getName())
-                .address(locationCreation.getAddress())
-                .build();
+        Location location = locationMapper.toEntity(locationCreation);
 
         return locationMapper.toDto(locationRepository.save(location));
     }
@@ -38,6 +39,20 @@ public class LocationService {
     public Location findLocationById(int id) {
         var locationOptional = locationRepository.findById(id);
         return locationOptional.orElseThrow(() -> new RuntimeException("Location not found"));
+    }
+
+    public List<LocationDTO> getLocations () {
+        List<LocationDTO> result = new ArrayList<>();
+        for (Location location : locationRepository.findAll()){
+            result.add(locationMapper.toDto(location));
+        }
+        return result;
+    }
+
+    public LocationDTO getLocation (int id) {
+        var locationOptional = locationRepository.findById(id);
+        return locationMapper.toDto(locationOptional.orElseThrow(() ->
+                new RuntimeException("Location not found")));
     }
 
     @Transactional
@@ -49,9 +64,10 @@ public class LocationService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
     public LocationDTO update(LocationDTO locationDto) {
-        final Location location = findLocationById(locationDto.getId());
-        return locationMapper.toDto(locationRepository.save(
-                merge(location, findLocationById(location.getId()))));
+        final Location location = locationMapper.toEntity(locationDto);
+        return locationMapper.toDto(locationRepository
+                .save(merge(location,
+                            findLocationById(location.getId()))));
     }
 
     private Location merge (Location src, Location dest) {

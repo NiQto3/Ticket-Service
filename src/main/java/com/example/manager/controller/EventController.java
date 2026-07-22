@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/event")
 @CrossOrigin(origins = "${cors.url}", maxAge = 3600, allowCredentials = "true")
@@ -18,21 +20,31 @@ public class EventController {
 
     private final EventService eventService;
 
-    @PostMapping("/create")
+    @PostMapping
     public EventDTO createEvent (@Valid @RequestBody EventCreationDTO eventCreationDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Event creation failed");
         return eventService.createEvent(eventCreationDTO);
     }
 
-    @PutMapping("/update")
+    @PatchMapping
     public EventDTO updateEvent (@Valid @RequestBody EventDTO eventDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Event update failed");
         return eventService.update(eventDTO);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteEvent (@Valid @PathVariable Integer id) {
         eventService.delete(id);
+    }
+
+    @GetMapping
+    public List<EventDTO> getAllEvents() {
+        return eventService.getEvents();
+    }
+
+    @GetMapping("/{id}")
+    public EventDTO getEventById (@Valid @PathVariable Integer id) {
+        return eventService.getEvent(id);
     }
 
 }

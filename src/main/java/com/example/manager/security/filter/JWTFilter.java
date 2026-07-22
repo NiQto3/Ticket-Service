@@ -42,7 +42,7 @@ public class JWTFilter extends OncePerRequestFilter {
             } else {
                 try {
                     int id = jwtUtil.validateTokenAndRetrieveClaim(jwt);
-                    UserDetailsInfo userDetails = new UserDetailsInfo(userService.findUserById(id));
+                    UserDetailsInfo userDetails = new UserDetailsInfo(userService.authFindUserById(id));
 
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());

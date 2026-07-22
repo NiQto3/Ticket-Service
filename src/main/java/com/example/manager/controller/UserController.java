@@ -39,20 +39,20 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @PutMapping("/update")
+    @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public UserDTO updateUserRole (@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Update user failed");
         return userService.update(userDTO);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser (@Valid @PathVariable Integer id) {
         userService.delete(id);
     }
 
-    @GetMapping("/user_list")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUserList () {
         return userService.getUsers();

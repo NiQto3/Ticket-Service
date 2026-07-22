@@ -39,12 +39,9 @@ public class UserService {
             throw new RuntimeException("Username already taken");
         }
 
-        User user = User.builder()
-                .username(userCreation.getUsername())
-                .passwordHash(hashPassword(userCreation.getPassword()))
-                .role(Role.ROLE_CUSTOMER)
-                .email(userCreation.getEmail())
-                .build();
+        userCreation.setPassword(hashPassword(userCreation.getPassword()));
+        User user = userMapper.toEntity(userCreation);
+
         userRepository.save(user);
         return user;
     }
@@ -71,16 +68,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserDTO update(UserDTO userDto) {
-        User user = findUserById(userDto.getId());
-        return userMapper.toDto(userRepository.save(merge(
-                user,
-                findUserById(user.getId())
-        )));
-    }
-
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserDTO> getUsers() {
         List<UserDTO> result = new ArrayList<>();
@@ -88,6 +75,16 @@ public class UserService {
             result.add(userMapper.toDto(user));
         }
         return result;
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserDTO update(UserDTO userDto) {
+        User user = userMapper.toEntity(userDto);
+        return userMapper.toDto(userRepository.save(merge(
+                user,
+                findUserById(user.getId())
+        )));
     }
 
     private User merge (User src, User dest) {

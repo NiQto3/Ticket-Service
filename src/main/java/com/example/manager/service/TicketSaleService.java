@@ -4,13 +4,12 @@ import com.example.manager.dto.EventTicketDTO;
 import com.example.manager.dto.TicketSaleDTO;
 import com.example.manager.mapper.TicketSaleMapper;
 import com.example.manager.model.TicketSale;
-import com.example.manager.repository.EventTicketRepository;
 import com.example.manager.repository.TicketSaleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -22,14 +21,13 @@ public class TicketSaleService {
     private final TicketSaleMapper ticketSaleMapper;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_MANAGER')")
     public TicketSaleDTO createTicketSale (TicketSaleDTO ticketSaleDTO) {
 
-        TicketSale ticketSale = TicketSale.builder()
-                .salePrice(ticketSaleDTO.getSalePrice())
-                .saleDateTime(ticketSaleDTO.getSaleDateTime())
-                .customer(userService.findUserById(ticketSaleDTO.getCustomerId()))
-                .eventTicket(eventTicketService.findEventTicketById(ticketSaleDTO.getEventTicket()))
-                .build();
+        TicketSale ticketSale = ticketSaleMapper.toEntity(ticketSaleDTO);
+        ticketSale.setCustomer(userService.findUserById(ticketSaleDTO.getCustomerId()));
+        ticketSale.setEventTicket(eventTicketService.getEventTicketById(ticketSaleDTO.getEventTicket()));
+
         return ticketSaleMapper.toDto(ticketSaleRepository.save(ticketSale));
     }
 

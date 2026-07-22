@@ -10,6 +10,7 @@ import com.example.manager.service.ErrorHandler;
 import com.example.manager.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -76,13 +77,15 @@ public class AuthController {
     public void changePassword(@PathVariable Integer userId,
                                @Valid @RequestBody PasswordChangeDTO dto,
                                BindingResult bindingResult,
-                               @AuthenticationPrincipal UserDetailsInfo currentUser) {
+                               @AuthenticationPrincipal UserDetailsInfo currentUser) throws BadRequestException {
         ErrorHandler.checkForErrors(bindingResult, "Change password failed");
 
         if (!(currentUser.getId() == userId)) {
             throw new AccessDeniedException("You cannot change password for another user");
         }
-        authService.changePassword(userService.authFindUserById(userId), dto);
+        if(!authService.changePassword(userService.authFindUserById(userId), dto)) {
+            throw new BadRequestException("Password don't match");
+        }
     }
 
 }

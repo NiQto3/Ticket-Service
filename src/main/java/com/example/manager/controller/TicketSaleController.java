@@ -17,7 +17,7 @@ public class TicketSaleController {
 
     private final TicketSaleService ticketSaleService;
 
-    @PostMapping("/create")
+    @PostMapping
     public TicketSaleDTO createTicketSale (@Valid @RequestBody TicketSaleDTO ticketSaleDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Ticket sale creation failed");
         return ticketSaleService.createTicketSale(ticketSaleDTO);

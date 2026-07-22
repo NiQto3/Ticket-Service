@@ -4,7 +4,6 @@ import com.example.manager.dto.EventTicketDTO;
 import com.example.manager.dto.PaymentRequest;
 import com.example.manager.dto.PaymentResponse;
 import com.example.manager.dto.TicketSaleDTO;
-import com.example.manager.mapper.EventTicketMapper;
 import com.example.manager.security.UserDetailsInfo;
 import com.example.manager.service.*;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -36,7 +33,7 @@ public class PaymentController {
     private final EventTicketService eventTicketService;
     private final EmailService emailService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<PaymentResponse> createPayment(@Valid @RequestBody EventTicketDTO eventTicketDTO,
                                                          BindingResult bindingResult,@RequestBody(required = false) String description,
                                                          @AuthenticationPrincipal UserDetailsInfo userDetails) {
@@ -74,7 +71,7 @@ public class PaymentController {
                     });
 
             EventTicketDTO eventTicketDTO =  eventTicketService.
-                    findById(Integer.parseInt(metadata.get("eventTicketId")));
+                    getById(Integer.parseInt(metadata.get("eventTicketId")));
 
             ticketSaleService.addSold(eventTicketDTO);
 

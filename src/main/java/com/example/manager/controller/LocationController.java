@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/location")
 @CrossOrigin(origins = "${cors.url}", maxAge = 3600, allowCredentials = "true")
@@ -18,21 +20,30 @@ public class LocationController {
 
     private final LocationService locationService;
 
-    @PostMapping("/create")
+    @PostMapping
     public LocationDTO createLocation(@Valid @RequestBody LocationCreationDTO locationCreationDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Location creation failed");
         return locationService.createLocation(locationCreationDTO);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteLocation(@Valid @PathVariable Integer id) {
         locationService.delete(id);
     }
 
-    @PutMapping("/update")
+    @PatchMapping
     public LocationDTO updateLocation(@Valid @RequestBody LocationDTO locationDTO, BindingResult bindingResult) {
         ErrorHandler.checkForErrors(bindingResult, "Location update failed");
         return locationService.update(locationDTO);
     }
 
+    @GetMapping
+    public List<LocationDTO> getAllLocations() {
+        return locationService.getLocations();
+    }
+
+    @GetMapping("/{id}")
+    public LocationDTO findLocationById(@Valid @PathVariable Integer id) {
+        return locationService.getLocation(id);
+    }
 }
